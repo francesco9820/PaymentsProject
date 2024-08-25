@@ -1,16 +1,18 @@
-import express, { Express, Request, Response } from "express";
-
 import dotenv from "dotenv";
 
-dotenv.config();
+import connectToDatabase from "./connectToDatabase";
 
-const app: Express = express();
-const port = process.env.PORT || 3000;
+import app from "./server";
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Express + TypeScript Server");
-});
 
-app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
-});
+const startServer = async () => {
+  dotenv.config();
+  await connectToDatabase();
+  const port = process.env.PORT || 3000;
+
+  app.listen(port, () => {
+    console.log(`[server]: Server is running at http://localhost:${port}`);
+  }); 
+}
+
+startServer();
