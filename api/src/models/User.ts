@@ -1,11 +1,12 @@
 import mongoose from 'mongoose';
-
-const { ObjectId } = mongoose.Schema.Types;
+import { isString } from '../utils/validators';
 
 const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
+    validate: isString
   },
 });
 
