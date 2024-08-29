@@ -10,7 +10,7 @@ const register = async (req: Request, res: Response) => {
         email
     } = req.body;
 
-    if (!isString(email)) throw createHttpError(`Invalid email ${email}`, 400).render(req, res);
+    if (!isString(email)) throw createHttpError(`Invalid email ${email}`, 400);
 
     const user = await new User({
         email

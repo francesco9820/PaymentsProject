@@ -3,8 +3,6 @@ import { Request, Response, NextFunction } from 'express';
 
 import User, { IUser } from '../models/User';
 
-import asyncMiddleware from './asyncMiddleware';
-
 import { isString } from '../utils/validators';
 import makeSecret from '../utils/makeSecret';
 import { createHttpError } from '../utils/HttpError';
@@ -29,24 +27,22 @@ declare global {
     }
   }
 
-const requireAuth = () => asyncMiddleware(
-  async (req: Request, _: Response, next: NextFunction) => {
-    let token = req.headers.authorization;
-    if (!isString(token)) throw createHttpError('Could not find any token in request', 401).render(req, _);
-    token = token.replace('Bearer ', '');
+const requireAuth = async (req: Request, _: Response, next: NextFunction) => {
+  let token = req.headers.authorization;
+  if (!isString(token)) throw createHttpError('Could not find any token in request', 401);
+  token = token.replace('Bearer ', '');
 
-    const secret = makeSecret(req);
-    const decoded = jwt.verify(token, secret) as DecodedToken;
+  const secret = makeSecret(req);
+  const decoded = jwt.verify(token, secret) as DecodedToken;
 
-    if (!decoded) throw createHttpError('Not Authorized', 401).render(req, _);
-    if (!decoded.user_id) throw createHttpError('Not Authorized', 401).render(req, _);
-    
-    const user = await User.findOne({ _id: decoded.user_id });
-    if (!user) throw createHttpError('Not Authorized', 401).render(req, _);
+  if (!decoded) throw createHttpError('Not Authorized', 401);
+  if (!decoded.user_id) throw createHttpError('Not Authorized', 401);
+  
+  const user = await User.findOne({ _id: decoded.user_id });
+  if (!user) throw createHttpError('Not Authorized', 401);
 
-    req.user = user;
-    next();
-  },
-);
+  req.user = user;
+  next();
+}
 
 export default requireAuth;

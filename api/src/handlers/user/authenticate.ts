@@ -18,12 +18,12 @@ const authenticate = async (req: Request, res: Response) => {
         email
     } = req.body;
 
-    if (!isString(email)) throw createHttpError(`Invalid email ${email}`, 400).render(req, res);
+    if (!isString(email)) throw createHttpError(`Invalid email ${email}`, 400);
 
     const user = await User.findOne({
         email
     });
-    if (!user) throw createHttpError('Not authorized', 401).render(req, res);
+    if (!user) throw createHttpError('Not authorized', 401);
 
     const payload: TokenPayload = {
         user_id: user._id,
