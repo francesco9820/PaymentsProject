@@ -33,8 +33,6 @@ class HttpError extends Error {
   }
 }
 
-export type IHttpError = typeof HttpError;
-
 export const createHttpError = (
   message: string,
   statusCode?: number,
