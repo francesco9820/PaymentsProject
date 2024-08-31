@@ -5,6 +5,7 @@ import { createHttpError } from '../../utils/HttpError';
 
 import Subscription from '../../models/Subscription';
 import SubscriptionTypes from '../../costants/SubscriptionTypes';
+import Braintree from '../../payments/Braintree';
 
 const mapSubscriptionTypeToPrice: Record<SubscriptionTypes, number> = {
     [SubscriptionTypes.MONTHLY]: 7.99 * 12,
@@ -27,6 +28,13 @@ const create = async (req: Request, res: Response) => {
     if (!isBoolean(hasThermometer)) throw createHttpError(`Invalid option hasThermometer ${hasThermometer}`, 400);
 
     const price = mapSubscriptionTypeToPrice[subscriptionType] + (hasThermometer ? 14.99 : 0);
+
+    const brainTree = new Braintree();
+
+    await brainTree.subscriptionProcess(
+        user._id.toHexString(),
+        price,
+    );
 
     const subscription = await new Subscription({
         price,
