@@ -6,9 +6,13 @@ import { createHttpError } from '../../utils/HttpError';
 import Subscription from '../../models/Subscription';
 import SubscriptionTypes from '../../costants/SubscriptionTypes';
 
+const mapSubscriptionTypeToPrice: Record<SubscriptionTypes, number> = {
+    [SubscriptionTypes.MONTHLY]: 7.99 * 12,
+    [SubscriptionTypes.YEARLY]: 79.99
+};
+
 const create = async (req: Request, res: Response) => {
     const {
-        price,
         name,
         subscriptionType,
         hasThermometer,
@@ -19,9 +23,10 @@ const create = async (req: Request, res: Response) => {
     } = req;
 
     if (!isString(name)) throw createHttpError(`Invalid name ${name}`, 400);
-    if (!isNumber(price)) throw createHttpError(`Invalid price ${price}`, 400);
     if (!isOneOfValues(SubscriptionTypes)(subscriptionType)) throw createHttpError(`Invalid subscription type ${subscriptionType}`, 400);
     if (!isBoolean(hasThermometer)) throw createHttpError(`Invalid option hasThermometer ${hasThermometer}`, 400);
+
+    const price = mapSubscriptionTypeToPrice[subscriptionType] + (hasThermometer ? 14.99 : 0);
 
     const subscription = await new Subscription({
         price,

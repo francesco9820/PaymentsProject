@@ -8,6 +8,8 @@ const list = async (req: Request, res: Response) => {
     const subscriptions = await Subscription.find({
         userId: user._id,
     });
+    res.header('Content-Range', subscriptions.length.toString());
+    res.header('Access-Control-Expose-Headers', 'Content-Range');
 
     res.json(subscriptions.map((s) => s.toJson()));
 };
