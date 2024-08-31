@@ -1,13 +1,13 @@
 {
-  "name": "api",
+  "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "ts.check": "npx tsc --project tsconfig.json",
     "add-build": "git add dist",
     "build": "rimraf dist && npx tsc",
-    "start": "node dist/index.js",
-    "dev": "nodemon src/index.ts"
+    "start": "nodemon api/index.ts",
+    "startBuild": "node dist/index.js"
   },
   "pre-commit": [
     "ts.check",

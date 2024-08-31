@@ -12,6 +12,12 @@ const register = async (req: Request, res: Response) => {
 
     if (!isString(email)) throw createHttpError(`Invalid email ${email}`, 400);
 
+    const conuntUsers = await User.countDocuments({
+        email
+    });
+
+    if (conuntUsers > 0) throw createHttpError(`Email ${email} already registed`, 400);
+
     const user = await new User({
         email
     }).save();
