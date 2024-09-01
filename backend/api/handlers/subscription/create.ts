@@ -45,7 +45,6 @@ const create = async (req: Request, res: Response) => {
         customerId: user._id.toHexString(),
         hasThermometer,
         subscriptionType,
-        subscriptionName: name,
         paymentMethodNonce,
     });
 

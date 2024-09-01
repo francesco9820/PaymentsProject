@@ -4,9 +4,9 @@ import { Request, Response } from 'express';
 
 import { isString } from '../../utils/validators';
 import { createHttpError } from '../../utils/HttpError';
+import makeSecret from '../../utils/makeSecret';
 
 import User from '../../models/User';
-import makeSecret from '../../utils/makeSecret';
 
 export type TokenPayload = {
     user_id: mongoose.Types.ObjectId,
