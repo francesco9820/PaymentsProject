@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
+import dayjs from 'dayjs';
 
-import SubscriptionTypes from '../costants/SubscriptionTypes';
+import SubscriptionTypes, { mapSubscriptionTypsToBillingFrequency } from '../costants/SubscriptionTypes';
 
 import { isOneOfValues } from '../utils/validators';
 
@@ -49,6 +50,8 @@ async function toJson(this: ISubscription) {
     this.braitreeSubscriptionId,
   );
 
+  if (!braintreeSubscription.numberOfBillingCycles) throw new Error(`Invalid number of billing cycles for subscription ${braintreeSubscription.id}`);
+
   return {
     id: this._id,
     name: this.name,
@@ -60,6 +63,10 @@ async function toJson(this: ISubscription) {
     status: braintreeSubscription.status,
     balance: braintreeSubscription.balance,
     nextBillingDate: braintreeSubscription.nextBillingDate,
+    expirationDate: dayjs(braintreeSubscription.createdAt).add(
+      braintreeSubscription.numberOfBillingCycles,
+      mapSubscriptionTypsToBillingFrequency[this.subscriptionType],
+    ).toDate(),
   };
 }
 

@@ -99,13 +99,22 @@ class Braintree {
                 planId: selectedPlan.id,
                 addOns: {
                     add: subscriptionAddOns,
-                }
+                },
+                
             })
 
             return subscription;
         } catch (e: any) {
             throw new Error(e.name + ' ' + e.type + ' ' + e.message);
         }
+    }
+
+    public async cancelSubscription(
+        subscriptionId: string,
+    ) {
+        await this.gateway.subscription.cancel(
+            subscriptionId,
+        );
     }
 
     public async findSubscription(
