@@ -16,21 +16,21 @@ All the code has been developed using typescript programming language.
 
 ## Instructions to run the project locally
 
-- Move to the backend folder and run in the root folder:
+- Move to the backend folder and run in the root folder: <br>
   `npm i`<br>
   `npm run start`<br>
-- Move to the frontend folder and run in the root folder:
+- Move to the frontend folder and run in the root folder: <br>
   `npm i`<br>
   `npm run dev`<br>
 **Important**: Remember before running this commends you need to populate the .env file in both the frontend and backend folders.
-  The .env file in the backend should have the following structure:
+  The .env file in the backend should have the following structure: <br>
      `PORT=3001`<br>
      `DATABASE=`<br>
      `SECRET=`<br>
      `BRAINTREEMERCHANTID=`<br>
      `BRAINTREEPUBLICKEY=`<br>
      `BRAINTREEPRIVATEKEY=`<br>
-  The .env file in the frontend should have the following structure:
+  The .env file in the frontend should have the following structure: <br>
     `API="http://localhost:3001"`<br>
     `TOKENIZATIONKEYBRAINTREE=`<br>
 
