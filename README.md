@@ -1,5 +1,39 @@
 # PaymentsProject
 
+## Description
+
+This is a simple project that simulates the behaviour of a subscription system. The following technologies have been involved for code development and app deployment:
+  - Backend:
+    - Express
+    - MongoDB
+    - BrainTree SDK
+  - Frontend:
+    - React
+    - React admin framework
+  - DevOps
+    - Vercel
+All the code has been developed using typescript programming language.
+
+## Instructions to run the project locally
+
+- Move to the backend folder and run in the root folder:
+  `npm i`
+  `npm run start`
+- Move to the frontend folder and run in the root folder:
+  `npm i`
+  `npm run dev`
+**Important**: Remember before running this commends you need to populate the .env file in both the frontend and backend folders.
+  The .env file in the backend should have the following structure:
+    `PORT=3001
+     DATABASE=
+     SECRET=
+     BRAINTREEMERCHANTID=
+     BRAINTREEPUBLICKEY=
+     BRAINTREEPRIVATEKEY=`
+  The .env file in the frontend should have the following structure:
+    `API="http://localhost:3001"
+    TOKENIZATIONKEYBRAINTREE=`
+
 ## Link to deployed project
 
 payments-frontend-mu.vercel.app
@@ -22,7 +56,7 @@ Expiration date can be any dates in the future
 
 ## Braintree subscriptions screenshots
 
-### Monthly with thermometer
+### Monthly with thermometer
 
 <img width="1430" alt="Screenshot 2024-09-01 at 21 28 43" src="https://github.com/user-attachments/assets/a7022072-cb26-4a2a-af30-cce22b581942">
 
