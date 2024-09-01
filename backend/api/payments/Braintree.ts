@@ -133,8 +133,6 @@ class Braintree {
 
         const paymentMethodToken = customer.paymentMethods[0].token;
 
-        console.log('paymentMethodToken', paymentMethodToken);
-
         const subscription = await this.createSubscription(
             subscriptionName,
             subscriptionType,
