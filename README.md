@@ -36,7 +36,7 @@ All the code has been developed using typescript programming language.
 
 ## Link to deployed project
 
-The deployed project can be found at the link: <a href="https://payments-frontend-mu.vercel.app">Subscription project</a>.
+The deployed project can be found at the link: <a href="https://payments-frontend-mu.vercel.app">Subscription project</a>. To login you can use a fake email but it needs to be in the correct format.
 
 ## Allowed cards
 
