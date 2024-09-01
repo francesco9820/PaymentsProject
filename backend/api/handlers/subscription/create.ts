@@ -8,7 +8,7 @@ import SubscriptionTypes from '../../costants/SubscriptionTypes';
 import Braintree from '../../payments/Braintree';
 
 const mapSubscriptionTypeToPrice: Record<SubscriptionTypes, number> = {
-    [SubscriptionTypes.MONTHLY]: 9.90 * 12,
+    [SubscriptionTypes.MONTHLY]: 9.90,
     [SubscriptionTypes.YEARLY]: 79.99,
 };
 

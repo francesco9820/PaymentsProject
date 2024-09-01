@@ -10,8 +10,6 @@ const CreateSubscription = () => {
     const [create, { isLoading }] = useCreate();
 
     useEffect(() => {
-        if (!process.env.TOKENIZATIONKEYBRAINTREE) return;
-
         const initialiseBraintree = () => dropin.create({
             // Insert your tokenization key here
             authorization: process.env.TOKENIZATIONKEYBRAINTREE || '',
@@ -30,7 +28,7 @@ const CreateSubscription = () => {
         } else {
             initialiseBraintree();
         }
-    }, [process.env.TOKENIZATIONKEYBRAINTREE]);
+    }, []);
 
 
     const handlePayment = useCallback((
@@ -43,7 +41,6 @@ const CreateSubscription = () => {
                         console.error(error);
                     } else {
                         const paymentMethodNonce = payload.nonce;
-                        console.log("payment method nonce", payload.nonce);
 
                         create(
                             'subscription',
@@ -78,7 +75,7 @@ const CreateSubscription = () => {
                     { id: 'yearly', name: 'Yearly subscription 79.90 EUR (per year)' },
                 ]} required />
                 <BooleanInput source="hasThermometer" label="Include thermometer 14.90 EUR (one-time)" defaultValue={false} />
-                <div id={"braintree-div"} />
+                <div id="braintree-div" />
             </SimpleForm>
         </Create>
     )
