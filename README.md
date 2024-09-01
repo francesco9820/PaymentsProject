@@ -64,4 +64,11 @@ Expiration date can be any dates in the future
 
 <img width="1435" alt="Screenshot 2024-09-01 at 21 29 22" src="https://github.com/user-attachments/assets/6143eddc-19bd-4566-9fb2-b5ef370cc422">
 
-Yearly subscriptions appear as the monthly ones but with different prices adn transactions
+### Yearly with thermometer
+
+<img width="1439" alt="Screenshot 2024-09-01 at 22 00 31" src="https://github.com/user-attachments/assets/9324fe41-0c58-4cf3-87d7-0b7c072c4b60">
+
+### Yearly without thermometer
+
+<img width="1435" alt="Screenshot 2024-09-01 at 22 01 13" src="https://github.com/user-attachments/assets/b6b30e32-81cb-41dd-9eeb-262640d83063">
+
