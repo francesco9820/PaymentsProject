@@ -20,7 +20,7 @@ class Braintree {
         });
     }
 
-    private async findCustomer(
+    public async findCustomer(
         customerId: string,
     ) {
         let customer;
@@ -33,7 +33,7 @@ class Braintree {
         return customer;
     }
 
-    private async createCustomer(
+    public async createCustomer(
         customerId: string,
         paymentMethodNonce: string,
     ) {
@@ -53,8 +53,23 @@ class Braintree {
         return customer;
     }
 
-    private async createSubscription(
-        name: string,
+    public async updateCustomerPaymentMethod(
+        customerId: string,
+        paymentMethodNonce: string,
+    ) {
+        const {
+            customer: updatedCustomer
+        } = await this.gateway.customer.update(
+            customerId,
+            {
+                paymentMethodNonce,
+            }
+        );
+
+        return updatedCustomer;
+    }
+
+    public async createSubscription(
         subscriptionType: SubscriptionTypes,
         hasThermometer: boolean,
         paymentMethodToken: string,
@@ -109,17 +124,15 @@ class Braintree {
         customerId,
         subscriptionType,
         hasThermometer,
-        subscriptionName,
         paymentMethodNonce,
     }:{
         customerId: string,
         subscriptionType: SubscriptionTypes,
         hasThermometer: boolean,
-        subscriptionName: string,
         paymentMethodNonce: string,
     }) {
         let customer = await this.findCustomer(
-            customerId
+            customerId,
         );
 
         if (!customer) {
@@ -127,6 +140,11 @@ class Braintree {
                 customerId,
                 paymentMethodNonce,
             )
+        } else {
+            customer = await this.updateCustomerPaymentMethod(
+                customerId,
+                paymentMethodNonce,
+            );
         }
 
         if (!customer.paymentMethods || customer.paymentMethods.length === 0) throw new Error(`Payment methods in customer ${customer.id} missing`);
@@ -134,7 +152,6 @@ class Braintree {
         const paymentMethodToken = customer.paymentMethods[0].token;
 
         const subscription = await this.createSubscription(
-            subscriptionName,
             subscriptionType,
             hasThermometer,
             paymentMethodToken,
