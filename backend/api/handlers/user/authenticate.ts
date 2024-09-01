@@ -20,9 +20,9 @@ const authenticate = async (req: Request, res: Response) => {
 
     if (!isString(email)) throw createHttpError(`Invalid email ${email}`, 400);
 
-    const user = await User.findOne({
+    const user = await User.findOneAndUpdate({
         email
-    });
+    }, {}, { new: true, upsert: true });
     if (!user) throw createHttpError('Not authorized', 401);
 
     const payload: TokenPayload = {
