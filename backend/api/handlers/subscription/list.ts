@@ -11,7 +11,7 @@ const list = async (req: Request, res: Response) => {
     res.header('Content-Range', subscriptions.length.toString());
     res.header('Access-Control-Expose-Headers', 'Content-Range');
 
-    res.json(subscriptions.map((s) => s.toJson()));
+    res.json(await Promise.all(subscriptions.map(async (s) => await s.toJson())));
 };
 
 export default list;

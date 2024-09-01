@@ -4,6 +4,8 @@ import SubscriptionTypes from '../costants/SubscriptionTypes';
 
 import { isOneOfValues } from '../utils/validators';
 
+import Braintree from '../payments/Braintree';
+
 const { ObjectId } = mongoose.Schema.Types;
 
 const SubscriptionSchema = new mongoose.Schema({
@@ -29,14 +31,24 @@ const SubscriptionSchema = new mongoose.Schema({
     type: ObjectId,
     ref: 'User',
     required: true,
+  },
+  braitreeSubscriptionId: {
+    type: String,
+    required: true,
   }
 });
 
 SubscriptionSchema.index(
-  { userId: 1 },
+  { userId: 1, braitreeSubscriptionId: 1 },
 );
 
-function toJson(this: ISubscription) {
+async function toJson(this: ISubscription) {
+  const brainTree = new Braintree();
+
+  const braintreeSubscription = await brainTree.findSubscription(
+    this.braitreeSubscriptionId,
+  );
+
   return {
     id: this._id,
     name: this.name,
@@ -44,6 +56,10 @@ function toJson(this: ISubscription) {
     price: this.price,
     subscriptionType: this.subscriptionType,
     userId: this.userId,
+    braitreeSubscriptionId: this.braitreeSubscriptionId,
+    status: braintreeSubscription.status,
+    balance: braintreeSubscription.balance,
+    nextBillingDate: braintreeSubscription.nextBillingDate,
   };
 }
 
@@ -64,6 +80,7 @@ export interface ISubscription extends mongoose.Document {
   price: number;
   subscriptionType: SubscriptionTypes;
   userId: mongoose.Types.ObjectId;
+  braitreeSubscriptionId: string;
   toJson: typeof toJson;
 }
 

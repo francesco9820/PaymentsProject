@@ -33,7 +33,14 @@ const requireAuth = async (req: Request, _: Response, next: NextFunction) => {
   token = token.replace('Bearer ', '');
 
   const secret = makeSecret(req);
-  const decoded = jwt.verify(token, secret) as DecodedToken;
+  let decoded;
+
+  try {
+    decoded = jwt.verify(token, secret) as DecodedToken;
+  } catch (e: any) {
+    if (e.name === 'TokenExpiredError') throw createHttpError(`Not Authorized: Session Exired`, 401);
+    else throw new Error(`Error when decoding token: ${e.message}`);
+  }
 
   if (!decoded) throw createHttpError('Not Authorized', 401);
   if (!decoded.user_id) throw createHttpError('Not Authorized', 401);
