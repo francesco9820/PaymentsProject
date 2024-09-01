@@ -24,19 +24,19 @@ All the code has been developed using typescript programming language.
   `npm run dev`
 **Important**: Remember before running this commends you need to populate the .env file in both the frontend and backend folders.
   The .env file in the backend should have the following structure:
-    `PORT=3001
-     DATABASE=
-     SECRET=
-     BRAINTREEMERCHANTID=
-     BRAINTREEPUBLICKEY=
+    `PORT=3001\n
+     DATABASE=\n
+     SECRET=\n
+     BRAINTREEMERCHANTID=\n
+     BRAINTREEPUBLICKEY=\n
      BRAINTREEPRIVATEKEY=`
   The .env file in the frontend should have the following structure:
-    `API="http://localhost:3001"
+    `API="http://localhost:3001"\n
     TOKENIZATIONKEYBRAINTREE=`
 
 ## Link to deployed project
 
-payments-frontend-mu.vercel.app
+The deployed project can be found at the link: <a href="https://payments-frontend-mu.vercel.app">Subscription project</a>.
 
 ## Allowed cards
 
