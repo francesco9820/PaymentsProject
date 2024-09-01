@@ -17,6 +17,7 @@ const create = async (req: Request, res: Response) => {
         name,
         subscriptionType,
         hasThermometer,
+        paymentMethodNonce,
     } = req.body;
 
     const {
@@ -24,6 +25,7 @@ const create = async (req: Request, res: Response) => {
     } = req;
 
     if (!isString(name)) throw createHttpError(`Invalid name ${name}`, 400);
+    if (!isString(paymentMethodNonce)) throw createHttpError(`Invalid payment method ${paymentMethodNonce}`);
     if (!isOneOfValues(SubscriptionTypes)(subscriptionType)) throw createHttpError(`Invalid subscription type ${subscriptionType}`, 400);
     if (!isBoolean(hasThermometer)) throw createHttpError(`Invalid option hasThermometer ${hasThermometer}`, 400);
 
@@ -44,7 +46,7 @@ const create = async (req: Request, res: Response) => {
         hasThermometer,
         subscriptionType,
         subscriptionName: name,
-        paymentMethodNonce: 'fake-valid-nonce',
+        paymentMethodNonce,
     });
 
     const subscription = await new Subscription({
