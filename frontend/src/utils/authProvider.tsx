@@ -20,7 +20,6 @@ export const authProvider: AuthProvider = {
     }
     const json = await response.json();
     const { token } = json;
-    console.log('token', token);
     store.setItem('token', token);
   },
   logout: () => {

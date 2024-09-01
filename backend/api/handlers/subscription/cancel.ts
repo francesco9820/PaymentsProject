@@ -9,8 +9,6 @@ import Braintree from '../../payments/Braintree';
 const cancel = async (req: Request, res: Response) => {
     const { id: _id } = req.params;
 
-    console.log('In hereeee');
-
     const subscription = await Subscription.findOne({
         _id,
     });
