@@ -2,6 +2,8 @@ import braintree from 'braintree';
 
 import User from '../models/User';
 
+import SubscriptionTypes, { mapSubscriptionTypsToBillingFrequency } from '../costants/SubscriptionTypes';
+
 const brainTreeErrorsTypes = {
     NOT_FOUND: 'notFoundError',
 };
@@ -51,30 +53,71 @@ class Braintree {
         return customer;
     }
 
-    private async makeTransaction(
-        price: number,
-        paymentMethodNonce?: string,
+    private async createSubscription(
+        name: string,
+        subscriptionType: SubscriptionTypes,
+        hasThermometer: boolean,
+        paymentMethodToken: string,
     ) {
-        const transactionResult = await this.gateway.transaction.sale({
-            amount: price.toString(),
-            paymentMethodNonce,
-            options: {
-              submitForSettlement: true
-            }
-          });
+        const { plans } = await this.gateway.plan.all();
 
-        console.log('transactionResult', transactionResult);
+        const selectedPlan = plans.find(
+            (p) => p.id === subscriptionType,
+        );
+        if (!selectedPlan) throw new Error(`Missing plan of type ${subscriptionType}`);
 
-        if (transactionResult.errors) throw new Error(`An error has occurred when calling braintree ${transactionResult.errors}`);
+        const subscriptionAddOns = [];
+        if (hasThermometer) {
+            const addOns = await this.gateway.addOn.all();
 
-        return transactionResult;
+            if (addOns.length !== 1) throw new Error(`Unexpected number of addons: ${addOns.length}`);
+
+            subscriptionAddOns.push({
+                inheritedFromId: addOns[0].id,
+                amount: addOns[0].amount,
+            })
+        }
+
+        try {
+            const { subscription } = await this.gateway.subscription.create({
+                paymentMethodToken,
+                planId: selectedPlan.id,
+                addOns: {
+                    add: subscriptionAddOns,
+                }
+            })
+
+            return subscription;
+        } catch (e: any) {
+            throw new Error(e.name + ' ' + e.type + ' ' + e.message);
+        }
     }
 
-    public async subscriptionProcess(
-        customerId: string,
-        price: number,
-        paymentMethodNonce: string = 'fake-valid-nonce',
+    public async findSubscription(
+        subscriptionId: string,
     ) {
+        try {
+            const subscription = await this.gateway.subscription.find(subscriptionId);
+
+            return subscription
+        } catch (e: any) {
+            throw new Error(`Could not find subscription on Braintree with id ${subscriptionId}: ${e.name}`);
+        }
+    }
+
+    public async subscriptionProcess({
+        customerId,
+        subscriptionType,
+        hasThermometer,
+        subscriptionName,
+        paymentMethodNonce,
+    }:{
+        customerId: string,
+        subscriptionType: SubscriptionTypes,
+        hasThermometer: boolean,
+        subscriptionName: string,
+        paymentMethodNonce: string,
+    }) {
         let customer = await this.findCustomer(
             customerId
         );
@@ -88,7 +131,20 @@ class Braintree {
 
         if (!customer.paymentMethods || customer.paymentMethods.length === 0) throw new Error(`Payment methods in customer ${customer.id} missing`);
 
-        throw new Error(`Customer ${customer.paymentMethods![0].token}`);
+        const paymentMethodToken = customer.paymentMethods[0].token;
+
+        console.log('paymentMethodToken', paymentMethodToken);
+
+        const subscription = await this.createSubscription(
+            subscriptionName,
+            subscriptionType,
+            hasThermometer,
+            paymentMethodToken,
+        );
+
+        return {
+            braitreeSubscriptionId: subscription.id,
+        }
     }
 }
 

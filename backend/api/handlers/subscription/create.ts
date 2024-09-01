@@ -8,8 +8,8 @@ import SubscriptionTypes from '../../costants/SubscriptionTypes';
 import Braintree from '../../payments/Braintree';
 
 const mapSubscriptionTypeToPrice: Record<SubscriptionTypes, number> = {
-    [SubscriptionTypes.MONTHLY]: 7.99 * 12,
-    [SubscriptionTypes.YEARLY]: 79.99
+    [SubscriptionTypes.MONTHLY]: 9.90 * 12,
+    [SubscriptionTypes.YEARLY]: 79.99,
 };
 
 const create = async (req: Request, res: Response) => {
@@ -27,14 +27,25 @@ const create = async (req: Request, res: Response) => {
     if (!isOneOfValues(SubscriptionTypes)(subscriptionType)) throw createHttpError(`Invalid subscription type ${subscriptionType}`, 400);
     if (!isBoolean(hasThermometer)) throw createHttpError(`Invalid option hasThermometer ${hasThermometer}`, 400);
 
-    const price = mapSubscriptionTypeToPrice[subscriptionType] + (hasThermometer ? 14.99 : 0);
+    const existingSubscriptions = await Subscription.countDocuments({
+        name,
+        userId: user._id,
+    });
+    if (existingSubscriptions > 0) throw createHttpError(`Subscription with name ${name} already exists`, 409);
+
+    const price = mapSubscriptionTypeToPrice[subscriptionType] + (hasThermometer ? 14.90 : 0);
 
     const brainTree = new Braintree();
 
-    await brainTree.subscriptionProcess(
-        user._id.toHexString(),
-        price,
-    );
+    const {
+        braitreeSubscriptionId
+    } = await brainTree.subscriptionProcess({
+        customerId: user._id.toHexString(),
+        hasThermometer,
+        subscriptionType,
+        subscriptionName: name,
+        paymentMethodNonce: 'fake-valid-nonce',
+    });
 
     const subscription = await new Subscription({
         price,
@@ -42,9 +53,10 @@ const create = async (req: Request, res: Response) => {
         hasThermometer,
         subscriptionType,
         userId: user._id,
+        braitreeSubscriptionId,
     }).save();
 
-    res.json(subscription.toJson());
+    res.json(await subscription.toJson());
 };
 
 export default create;
