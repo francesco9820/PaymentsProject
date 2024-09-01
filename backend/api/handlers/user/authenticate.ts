@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 
-import { isString } from '../../utils/validators';
+import { isValidEmail } from '../../utils/validators';
 import { createHttpError } from '../../utils/HttpError';
 import makeSecret from '../../utils/makeSecret';
 
@@ -18,7 +18,7 @@ const authenticate = async (req: Request, res: Response) => {
         email
     } = req.body;
 
-    if (!isString(email)) throw createHttpError(`Invalid email ${email}`, 400);
+    if (!isValidEmail(email)) throw createHttpError(`Invalid email ${email}`, 400);
 
     const user = await User.findOneAndUpdate({
         email
